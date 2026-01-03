@@ -1,5 +1,5 @@
 # Imagen base de PHP con FPM
-FROM php:8.2-fpm
+FROM php:8.4-fpm
 
 # Argumentos de construcción
 ARG user=laravel
