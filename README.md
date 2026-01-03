@@ -1,6 +1,6 @@
 # 🚀 Entorno de Desarrollo Laravel con Docker
 
-Entorno completo y listo para usar con Laravel + Docker. Simplemente clona, construye y empieza a programar.
+Entorno Docker completo y listo para usar con Laravel. **Configuración de infraestructura separada del código** para mayor claridad y facilidad de aprendizaje.
 
 ---
 
@@ -14,97 +14,158 @@ Entorno completo y listo para usar con Laravel + Docker. Simplemente clona, cons
 ## 🏗️ Estructura del proyecto
 
 ```
-laravel-docker-setup/
+laravel-docker-setup/          ← Repositorio (configuración Docker)
 ├── docker/
 │   ├── nginx/
-│   │   └── default.conf        # Configuración de Nginx
+│   │   └── default.conf       ← Configuración del servidor web
 │   └── php/
-│       └── Dockerfile          # Imagen PHP personalizada
-├── docker-compose.yml          # Orquestación de contenedores
-├── .gitignore                  # Archivos que Git ignora
-├── .env.example                # Plantilla de configuración
-└── README.md                   # Este archivo
+│       └── Dockerfile         ← Imagen PHP con extensiones de Laravel
+├── docker-compose.yml         ← Orquestación de contenedores
+├── .gitignore
+├── .env.example
+├── README.md
+└── src/                       ← Tu proyecto Laravel irá aquí
+    ├── app/                   (se crea en el paso 3)
+    ├── public/
+    ├── routes/
+    └── ...
 ```
+
+**Filosofía de diseño:**
+- 📁 `docker/` y `docker-compose.yml` → **Infraestructura** (lo que clonas del repo)
+- 📁 `src/` → **Código de Laravel** (lo que tú creas después)
+- Esta separación hace más fácil entender qué es qué mientras aprendes
 
 ---
 
-## ⚡ Inicio rápido (3 pasos)
+## ⚡ Inicio rápido
 
-### 1️⃣ Clonar el repositorio
-
-Abre una terminal en la carpeta donde quieras crear el proyecto y reemplaza mi-proyecto por el nombre que prefieras (por ejemplo: `proyecto-hola-mundo`).
+### Paso 1️⃣: Clonar la configuración Docker
 
 ```bash
-git clone https://github.com/endiva112/laravel-docker-setup.git mi-proyecto
+git clone https://github.com/TU-USUARIO/laravel-docker-setup.git mi-proyecto
 cd mi-proyecto
 ```
 
-### 2️⃣ Construir los contenedores
+**¿Qué acabas de hacer?**
+- Descargaste la **configuración del entorno de desarrollo**
+- Tienes los Dockerfiles, configuración de Nginx, MySQL, etc.
+- **No tienes Laravel todavía**, eso viene en el paso 3
+
+---
+
+### Paso 2️⃣: Construir los contenedores
 
 ```bash
 docker compose build
 ```
 
-Esto puede tardar 2-3 minutos la primera vez (descarga e instala todo).
+**¿Qué está pasando aquí?**
+- Docker está construyendo una imagen personalizada de PHP
+- Instala extensiones que Laravel necesita (MySQL, GD, ZIP, etc.)
+- Descarga las imágenes de Nginx, MySQL, phpMyAdmin, etc.
+- **Esto tarda 2-3 minutos la primera vez**
 
-### 3️⃣ Crear un proyecto Laravel nuevo
-
-```bash
-docker compose run --rm composer create-project laravel/laravel .
-```
-
-**¡Ya está!** Ahora sigue con la [configuración inicial](#️-configuración-inicial).
+**Importante:** Este paso **NO instala Laravel**, solo prepara el entorno donde Laravel vivirá.
 
 ---
 
-## 🛠️ Configuración inicial
-
-### 1. Configurar la base de datos
-
-Laravel crea automáticamente un archivo `.env`. Verifica que tenga estos valores:
-
-```env
-DB_CONNECTION=mysql
-DB_HOST=db                    # ← Nombre del servicio en docker-compose
-DB_PORT=3306
-DB_DATABASE=laravel
-DB_USERNAME=laravel
-DB_PASSWORD=secret
-```
-
-Si no existe el archivo `.env`, copia el `.env.example`:
+### Paso 3️⃣: Crear el proyecto Laravel
 
 ```bash
-# En Windows
-copy .env.example .env
-
-# En Linux/Mac
-cp .env.example .env
+docker compose run --rm composer create-project laravel/laravel src
 ```
 
-### 2. Levantar todos los contenedores
+**¿Qué está pasando aquí?**
+- Usas Composer (gestor de paquetes PHP) **dentro del contenedor**
+- Composer descarga Laravel y todas sus dependencias
+- Todo se instala en la carpeta `src/`
+- `--rm` significa que el contenedor de Composer se elimina automáticamente al terminar
+
+**Esto tarda 1-2 minutos** (descarga ~50MB de código).
+
+---
+
+### Paso 4️⃣: Levantar todos los servicios
 
 ```bash
 docker compose up -d
 ```
 
-La bandera `-d` ejecuta en segundo plano (detached mode).
+**¿Qué está pasando?**
+- Nginx (servidor web) empieza a escuchar en el puerto 80
+- PHP-FPM (intérprete de PHP) se levanta
+- MySQL (base de datos) se inicia
+- phpMyAdmin (interfaz web para MySQL) se levanta
+- `-d` = "detached mode" (segundo plano)
 
-### 3. Generar la clave de aplicación
+**Verifica que todo esté corriendo:**
+```bash
+docker compose ps
+```
+
+Deberías ver 4 contenedores activos.
+
+---
+
+### Paso 5️⃣: Configurar Laravel
+
+#### a) Generar la clave de aplicación
 
 ```bash
 docker compose exec php php artisan key:generate
 ```
 
-### 4. Ejecutar las migraciones
+**¿Qué hace esto?**
+- Laravel necesita una clave única para encriptar datos
+- `artisan` es la herramienta de línea de comandos de Laravel
+- Se guarda automáticamente en `src/.env`
+
+#### b) Ejecutar las migraciones de base de datos
 
 ```bash
 docker compose exec php php artisan migrate
 ```
 
-### 5. ¡A programar!
+**¿Qué hace esto?**
+- Crea las tablas iniciales en la base de datos MySQL
+- Laravel incluye algunas tablas por defecto (usuarios, sesiones, etc.)
 
-Abre tu navegador en http://localhost y deberías ver la pantalla de bienvenida de Laravel.
+---
+
+### ✅ ¡Listo!
+
+Abre tu navegador en:
+- **Laravel**: http://localhost
+- **phpMyAdmin**: http://localhost:8080
+  - Servidor: `db`
+  - Usuario: `laravel`
+  - Contraseña: `secret`
+
+---
+
+## 🎓 Entendiendo el flujo
+
+```
+1. git clone          → Descargas la configuración Docker
+                         (todavía NO tienes Laravel)
+
+2. docker compose     → Docker construye las imágenes
+   build                 (instala PHP, Nginx, MySQL en contenedores)
+                         (todavía NO tienes Laravel)
+
+3. composer create    → AHORA SÍ creas el proyecto Laravel
+   -project              usando Composer dentro del contenedor
+                         Laravel aparece en src/
+
+4. docker compose     → Levantas todos los servicios
+   up -d                 (servidor web, PHP, base de datos)
+
+5. artisan key:       → Configuración inicial de Laravel
+   generate + migrate
+```
+
+**Clave:** Primero preparas el entorno (Docker), **luego** creas el proyecto (Laravel).
 
 ---
 
@@ -129,24 +190,30 @@ docker compose exec php php artisan make:controller HomeController
 # Crear modelo con migración
 docker compose exec php php artisan make:model Post -m
 
-# Limpiar caché
-docker compose exec php php artisan cache:clear
-
 # Ver todas las rutas
 docker compose exec php php artisan route:list
+
+# Limpiar caché
+docker compose exec php php artisan cache:clear
+docker compose exec php php artisan config:clear
+docker compose exec php php artisan view:clear
 
 # Ejecutar migraciones
 docker compose exec php php artisan migrate
 
 # Revertir última migración
 docker compose exec php php artisan migrate:rollback
+
+# Crear seeder (datos de prueba)
+docker compose exec php php artisan make:seeder UserSeeder
+docker compose exec php php artisan db:seed
 ```
 
 ### Composer (dependencias PHP)
 
 ```bash
 # Instalar paquete
-docker compose run --rm composer require vendor/package
+docker compose run --rm composer require guzzlehttp/guzzle
 
 # Actualizar dependencias
 docker compose run --rm composer update
@@ -155,13 +222,13 @@ docker compose run --rm composer update
 docker compose run --rm composer show
 ```
 
-### NPM / Node (frontend)
+### NPM / Node (frontend: Vite, Tailwind, etc.)
 
 ```bash
-# Instalar dependencias
+# Instalar dependencias (primera vez)
 docker compose run --rm node npm install
 
-# Modo desarrollo (Vite hot reload)
+# Modo desarrollo con hot reload
 docker compose run --rm --service-ports node npm run dev
 
 # Compilar para producción
@@ -195,16 +262,16 @@ docker compose down -v
 
 ## 💡 Tips y trucos
 
-### Entrar al contenedor PHP
+### Entrar al contenedor PHP (modo interactivo)
 
 Si necesitas ejecutar varios comandos seguidos:
 
 ```bash
 docker compose exec php bash
 
-# Ahora estás dentro del contenedor
+# Ahora estás "dentro" del contenedor
 php artisan migrate
-composer require guzzlehttp/guzzle
+composer require vendor/package
 php artisan make:controller ApiController
 
 # Salir
@@ -242,31 +309,33 @@ artisan migrate
 
 ### Error: "Permission denied" al crear archivos
 
-**Causa**: El UID del contenedor no coincide con tu usuario.
+**Causa**: El UID del contenedor no coincide con tu usuario (solo Linux/WSL2).
 
 **Solución**:
 
 1. Averigua tu UID:
 ```bash
-# Linux/Mac
-id -u
-
-# Windows WSL
+# Linux/Mac/WSL2
 id -u
 ```
 
-2. Edita `docker-compose.yml` y cambia:
-```yaml
-php:
-  user: "TU_UID:TU_UID"  # Ejemplo: "1000:1000"
+2. Crea un archivo `.env` en la **raíz del proyecto** (no en `src/`):
+```bash
+DOCKER_UID=1000
+DOCKER_GID=1000
 ```
 
-3. Reconstruye:
+Ajusta los valores con tu UID real si es diferente.
+
+3. Reinicia los contenedores:
 ```bash
 docker compose down
-docker compose build
 docker compose up -d
 ```
+
+**Usuarios de Windows sin WSL2**: No necesitan hacer esto, funciona automáticamente.
+
+---
 
 ### Error 502 Bad Gateway
 
@@ -279,12 +348,34 @@ docker compose restart web
 docker compose logs -f php
 ```
 
+---
+
 ### Error de conexión a la base de datos
 
 **Verifica**:
-1. Que el servicio `db` esté corriendo: `docker compose ps`
-2. Que el archivo `.env` tenga `DB_HOST=db` (no `localhost`)
-3. Espera 10-15 segundos después de `docker compose up` (MySQL tarda en iniciar)
+1. Que el servicio `db` esté corriendo:
+```bash
+docker compose ps
+```
+
+2. Que el archivo `src/.env` tenga estos valores:
+```env
+DB_HOST=db               # ← IMPORTANTE: debe ser "db", no "localhost"
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=laravel
+DB_PASSWORD=secret
+```
+
+3. **Espera 10-15 segundos** después de `docker compose up`. MySQL tarda en iniciar completamente.
+
+Si persiste, reinicia:
+```bash
+docker compose restart db
+docker compose exec php php artisan migrate
+```
+
+---
 
 ### La aplicación no refleja cambios en el código
 
@@ -295,17 +386,24 @@ docker compose logs -f php
 docker compose exec php php artisan cache:clear
 docker compose exec php php artisan config:clear
 docker compose exec php php artisan view:clear
+docker compose exec php php artisan route:clear
 ```
+
+---
 
 ### Quiero empezar desde cero
 
 ```bash
-# Eliminar todo (contenedores + volúmenes + código)
+# Parar y eliminar TODO (contenedores + volúmenes + código)
 docker compose down -v
-rm -rf vendor node_modules public storage bootstrap/cache
+rm -rf src/  # Linux/Mac
+rmdir /S /Q src  # Windows
 
 # Volver a crear proyecto
-docker compose run --rm composer create-project laravel/laravel .
+docker compose run --rm composer create-project laravel/laravel src
+docker compose up -d
+docker compose exec php php artisan key:generate
+docker compose exec php php artisan migrate
 ```
 
 ---
@@ -313,7 +411,7 @@ docker compose run --rm composer create-project laravel/laravel .
 ## 🔄 Workflow de desarrollo típico
 
 ```bash
-# Lunes por la mañana
+# Lunes por la mañana - Levantar el entorno
 docker compose up -d
 
 # Trabajar normalmente
@@ -323,12 +421,33 @@ docker compose exec php php artisan migrate
 # Instalar paquete si necesitas
 docker compose run --rm composer require laravel/sanctum
 
-# Trabajar con Vite/Tailwind
+# Trabajar con Vite/Tailwind (en otra terminal)
 docker compose run --rm --service-ports node npm run dev
 
-# Al terminar el día (opcional)
+# Al terminar el día (opcional, puedes dejarlo corriendo)
 docker compose down
 ```
+
+---
+
+## 🔒 Configuración de permisos (solo Linux/WSL2)
+
+Si tienes problemas de permisos al crear archivos en Linux/WSL2, configura tu UID:
+
+```bash
+# Averigua tu UID
+id -u
+
+# Crea archivo .env en la raíz del proyecto
+echo "DOCKER_UID=$(id -u)" > .env
+echo "DOCKER_GID=$(id -g)" >> .env
+
+# Reinicia
+docker compose down
+docker compose up -d
+```
+
+**Usuarios de Windows (sin WSL2)**: No necesitan hacer esto.
 
 ---
 
@@ -342,6 +461,7 @@ docker compose down
 | **Comandos** | `docker compose exec php php artisan` | `sail artisan` |
 | **Personalización** | Fácil (editas Dockerfile) | Más complicado |
 | **Portabilidad** | Funciona en cualquier proyecto | Solo Laravel |
+| **Separación código/infra** | Clara (`docker/` vs `src/`) | Todo mezclado |
 
 **Recomendación**: Usa este proyecto si quieres aprender Docker y tener control total. Usa Sail si solo quieres programar Laravel sin complicaciones.
 
@@ -353,6 +473,7 @@ docker compose down
 - [Docker Compose reference](https://docs.docker.com/compose/)
 - [PHP-FPM configuration](https://www.php.net/manual/es/install.fpm.php)
 - [Nginx con Laravel](https://laravel.com/docs/deployment#nginx)
+- [Artisan Console](https://laravel.com/docs/artisan)
 
 ---
 
@@ -376,6 +497,8 @@ Este proyecto es de código abierto bajo licencia MIT. Úsalo libremente para ap
 
 ## 🙏 Agradecimientos
 
-Creado como recurso educativo para estudiantes que quieren aprender Laravel con Docker sin complicaciones.
+Creado como recurso educativo para estudiantes que quieren aprender Laravel con Docker de forma clara y sin magia.
+
+**Filosofía del proyecto:** Separar la infraestructura (Docker) del código (Laravel) para facilitar el aprendizaje y comprensión de ambas tecnologías.
 
 Si te ha sido útil, ¡dale una ⭐ en GitHub!
