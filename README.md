@@ -73,7 +73,7 @@ docker compose build
 ### Paso 3️⃣: Crear el proyecto Laravel
 
 ```bash
-docker compose run --rm composer create-project laravel/laravel src
+docker compose run --rm composer create-project laravel/laravel .
 ```
 
 **¿Qué está pasando aquí?**
