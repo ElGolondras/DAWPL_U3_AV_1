@@ -112,7 +112,7 @@ services:
   # 🧪 NODE.JS (para Vite, Tailwind, etc.)
   ###########################################################################
   node:
-    image: node:18-alpine
+    image: node:20-alpine
     container_name: laravel_node
     working_dir: /var/www/html
     volumes:

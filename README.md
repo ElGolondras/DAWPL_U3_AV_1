@@ -8,6 +8,7 @@ Entorno Docker completo y listo para usar con Laravel. **Configuración de infra
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop) instalado
 - Git instalado
+TODO: agregar documentacion a cerca del cambio necesario en el .env una vez instalado Laravel
 
 ---
 
@@ -88,15 +89,6 @@ pwd
 # Crea una carpeta para tus proyectos
 mkdir -p proyectos
 cd proyectos
-```
-
-**⚠️ CRÍTICO:** Asegúrate de estar en `/home/tu-usuario/...` y NO en `/mnt/c/...`
-
-```bash
-# Verifica de nuevo tu ubicación
-pwd
-# Debe mostrar: /home/tu-usuario/proyectos (✅ CORRECTO)
-# Si muestra: /mnt/c/Users/... (❌ INCORRECTO, rendimiento lento)
 ```
 
 ---
