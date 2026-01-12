@@ -26,7 +26,7 @@ services:
   ###########################################################################
   web:
     image: nginx:stable-alpine
-    container_name: laravel_nginx
+    # container_name: laravel_nginx
     ports:
       - "80:80"
     volumes:
@@ -45,7 +45,7 @@ services:
     build:
       context: ./docker/php
       dockerfile: Dockerfile
-    container_name: laravel_php
+    # container_name: laravel_php
     working_dir: /var/www/html
     user: "${DOCKER_UID:-1000}:${DOCKER_GID:-1000}"
     volumes:
@@ -61,7 +61,7 @@ services:
   ###########################################################################
   db:
     image: mysql:8.0
-    container_name: laravel_db
+    # container_name: laravel_db
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: laravel
@@ -82,7 +82,7 @@ services:
   ###########################################################################
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: laravel_phpmyadmin
+    # container_name: laravel_phpmyadmin
     depends_on:
       - db
     environment:
@@ -99,7 +99,7 @@ services:
   ###########################################################################
   composer:
     image: composer:2
-    container_name: laravel_composer
+    # container_name: laravel_composer
     working_dir: /var/www/html
     volumes:
       - ./src:/var/www/html
@@ -113,7 +113,7 @@ services:
   ###########################################################################
   node:
     image: node:20-alpine
-    container_name: laravel_node
+    # container_name: laravel_node
     working_dir: /var/www/html
     volumes:
       - ./src:/var/www/html
