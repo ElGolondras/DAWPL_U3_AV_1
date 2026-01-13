@@ -23,10 +23,12 @@ Antes de empezar necesitas:
 1. **Docker Desktop** (Windows/Mac) o **Docker** (Linux)  
    👉 [Descargar Docker Desktop](https://www.docker.com/products/docker-desktop)
 
-2. **Si usas Windows:**
+2. **⚠️⚠️⚠️ Si usas Windows:**
    - Virtualización habilitada en la BIOS (si ya usaste VirtualBox o VMware, ya la tienes)
-   - **Ubuntu desde Microsoft Store** (recomendado para mejor rendimiento)
+   - ⚠️ **Ubuntu desde Microsoft Store** (recomendado para mejor rendimiento)
    - WSL2 instalado (Docker Desktop lo instala automáticamente)
+
+3. **Visual Studio Code** Cualquier IDE es válido, pero es el que usará en este proyecto
 
 Puedes comprobar si wsl está instalado ejecutando en un CMD
 ```bash
@@ -72,10 +74,12 @@ laravel-docker-setup/          ← Repositorio (configuración Docker)
 
 **1. Clona este repositorio**
 
+Es aquí donde determinas el nombre que le quieras dar a tu proyecto, el nombre por defecto es `mi-proyecto`
 ```bash
 git clone https://github.com/endiva112/laravel-docker-setup.git mi-proyecto
 ```
 
+Accedemos al proyecto que acabamos de crear
 ```bash
 cd mi-proyecto
 ```
@@ -92,7 +96,7 @@ mkdir src
 sudo usermod -aG docker $USER
 ```
 
-⚠ Ahora debes cerrar la terminal para que se apliquen los cambios y volverla a abrir
+⚠️ Ahora debes cerrar la terminal para que se apliquen los cambios y volverla a abrir
 
 **4. Construye los contenedores**
 
@@ -105,14 +109,51 @@ docker compose build
 ```bash
 docker compose run --rm composer create-project laravel/laravel .
 ```
+Esto instala todo lo necesario y se crea nuestro proyecto Laravel
+⚠️
+**6. Modificar el .env**
 
-**6. Levantar los contenedores**
+El proyecto Laravel que acabamos de instalar utiliza `sqlite` por defecto, esto debemos cambiarlo para que se ataque a la base de datos que usa nuestro contenedor `MySQL`
+
+Accedemos a la carpeta de nuestro proyecto
+```bash
+cd src/
+```
+
+Y lanzamos Visual Studio Code para modificarlo. Una vez dentro, solo hay que encontrar el `.env` y modificar esta sección:
+```bash
+DB_CONNECTION=sqlite
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
+# DB_DATABASE=laravel
+# DB_USERNAME=root
+# DB_PASSWORD=
+```
+
+por esta otra:
+
+```bash
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=laravel
+DB_PASSWORD=secret
+```
+
+Guardamos y volvemos a la ruta donde nos encontrabamos para seguir con la instalación.
+
+```bash
+cd ..
+```
+
+**7. Levantar los contenedores**
 
 ```bash
 docker compose up -d
 ```
 
-**7. Configurar Laravel**
+**8. Configurar Laravel**
 
 Generar la clave de aplicación.
 
