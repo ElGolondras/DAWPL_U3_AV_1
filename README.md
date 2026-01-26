@@ -257,6 +257,10 @@ docker compose up -d
 cd src/
 ```
 
+```bash
+code .
+```
+
 **Terminal 2:** Vite en modo desarrollo (hot reload)
 ```bash
 docker compose run --rm --service-ports node npm run dev
