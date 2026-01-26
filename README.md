@@ -226,6 +226,7 @@ export default defineConfig({
 
 ### 3. Compila los assets
 
+No lances este comando si aún no tienes Laravel Breeze corriendo, abajo hay una guía para instalarlo.
 ```bash
 docker compose run --rm --service-ports node npm run dev
 ```
