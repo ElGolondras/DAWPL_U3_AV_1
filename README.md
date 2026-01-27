@@ -396,3 +396,4 @@ Creado como recurso educativo para estudiantes que quieren aprender Laravel con 
 ---
 
 <sub>💡 **Filosofía del proyecto:** Separar la infraestructura (Docker) del código (Laravel) para facilitar el aprendizaje y comprensión de ambas tecnologías.</sub>
+# DAWPL_U3_AV_1
