@@ -27,7 +27,14 @@ return new class extends Migration
             $table->foreignId('aula_id')->index();
             $table->timestamps();
         });
-
+        
+        Schema::create('profesores', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre');
+            $table->string('email')->unique();
+            $table->string('password')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -38,5 +45,6 @@ return new class extends Migration
         //
         Schema::dropIfExists('aulas');
         Schema::dropIfExists('dispositivos');
+        Schema::dropIfExists('profesores');
     }
 };
