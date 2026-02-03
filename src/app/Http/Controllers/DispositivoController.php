@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\dispositivo;
+use App\Models\Dispositivo;
 use Illuminate\Http\Request;
+use App\Models\Aula;
 
 class DispositivoController extends Controller
 {
@@ -13,8 +14,8 @@ class DispositivoController extends Controller
     public function index()
     {
         //
-        $dispositivos = dispositivo::get();
-        return view('dispositivo.listado', compact('dispositivos'));
+        $dispositivos = Dispositivo::with('aula')->get();
+        return view('dispositivos.listadodisp', compact('dispositivos'));
     }
 
     /**
@@ -23,7 +24,8 @@ class DispositivoController extends Controller
     public function create()
     {
         //
-        return view('dispositivo.crear');
+        $aulas = Aula::all(); 
+        return view('dispositivos.altadisp', compact('aulas'));
     }
 
     /**
@@ -47,10 +49,10 @@ class DispositivoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(dispositivo $dispositivo)
+    public function edit(Dispositivo $dispositivo)
     {
-        //
-        return view('dispositivo.editar', compact('dispositivo'));
+        $aulas = \App\Models\Aula::all(); 
+        return view('dispositivos.editardisp', compact('dispositivo', 'aulas'));
     }
 
     /**
@@ -66,10 +68,15 @@ class DispositivoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(dispositivo $dispositivo)
+    public function confirmDelete(Dispositivo $dispositivo)
     {
-        //
+        // Esto cargará tu archivo resources/views/eliminardisp.blade.php
+        return view('eliminardisp', compact('dispositivo'));
+    }
+
+    public function destroy(Dispositivo $dispositivo)
+    {
         $dispositivo->delete();
-        return to_route('dispositivos.index');
+        return redirect()->route('dispositivos.index');
     }
 }

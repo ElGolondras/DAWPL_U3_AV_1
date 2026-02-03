@@ -3,20 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class aula extends Model
+class Aula extends Model
 {
-    //
-    protected $fillable = [
-        'nombre',
-    ];
-}
+    use HasFactory;
 
-class aula extends Model
-{
-    //
     protected $fillable = [
         'nombre',
         'batch',
     ];
+
+    public function dispositivos()
+    {
+        return $this->hasMany(Dispositivo::class);
+    }
 }

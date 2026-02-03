@@ -21,17 +21,17 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($dispositivos as $dispositivo)
+            @foreach($dispositivos as $dispositivo)
             <tr>
                 <td>{{ $dispositivo->id }}</td>
                 <td>{{ $dispositivo->nombre }}</td>
                 <td>{{ $dispositivo->tipo }}</td>
                 <td>{{ $dispositivo->modelo }}</td>
                 <td>{{ $dispositivo->estado }}</td>
-                <td>{{ $dispositivo->aula->nombre }}</td>
+                <td>{{ $dispositivo->aula->nombre ?? 'Sin Aula' }}</td>
                 <td>
-                    <a href="/dispositivos/editar/{{ $dispositivo->id }}">Editar</a>
-                    <form action="/dispositivos/{{ $dispositivo->id }}" method="post" style="display:inline;">
+                    <a href="/dispositivos/{{ $dispositivo->id }}/editar"><button>Editar</button></a>
+                    <form action="{{ route('dispositivos.destroy', $dispositivo->id) }}" method="post">
                         @csrf
                         @method('DELETE')
                         <button type="submit">Eliminar</button>

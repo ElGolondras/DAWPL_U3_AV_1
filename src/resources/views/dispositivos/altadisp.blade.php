@@ -19,9 +19,9 @@
         <input type="text" id="estado" name="estado" required><br>
         <label for="aula_id">Aula:</label>
         <select id="aula_id" name="aula_id" required>
-            {% for aula in aulas %}
-            <option value="{{ aula.id }}">{{ aula.nombre }}</option>
-            {% endfor %}
+            @foreach($aulas as $aula)
+                <option value="{{ $aula->id }}">{{ $aula->nombre }}</option>
+            @endforeach
         </select><br>
         <button type="submit">Guardar</button>
     </form> 
