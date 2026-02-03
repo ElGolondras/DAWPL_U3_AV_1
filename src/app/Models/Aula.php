@@ -9,6 +9,14 @@ class aula extends Model
     //
     protected $fillable = [
         'nombre',
+    ];
+}
+
+class aula extends Model
+{
+    //
+    protected $fillable = [
+        'nombre',
         'batch',
     ];
 }

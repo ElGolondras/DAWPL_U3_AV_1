@@ -20,6 +20,26 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'password' => 'password',
+        ]);
+
+        Profesor::factory()->create([
+            'nombre' => 'Test Profesor',
+            'email' => 'test@example.com',
+            'password' => 'password',
+        ]);
+
+        Aula::factory()->create([
+            'nombre' => 'Test Aula',
+            'batch' => 'Test Batch',
+        ]);
+
+        Dispositivo::factory()->create([
+            'nombre' => 'Test Dispositivo',
+            'tipo' => 'Test Tipo',
+            'modelo' => 'Test Modelo',
+            'estado' => 'Test Estado',
+            'aula_id' => 1,
         ]);
     }
 }
