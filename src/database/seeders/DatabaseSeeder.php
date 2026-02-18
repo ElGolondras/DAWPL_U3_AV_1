@@ -14,32 +14,19 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    {
-        // User::factory(10)->create();
+{
+    // 1. Creamos 10 aulas primero
+    $aulas = \App\Models\Aula::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'password',
-        ]);
+    // 2. Creamos 50 dispositivos y los repartimos entre esas aulas
+    \App\Models\Dispositivo::factory(50)->recycle($aulas)->create();
 
-        Profesor::factory()->create([
-            'nombre' => 'Test Profesor',
-            'email' => 'test@example.com',
-            'password' => 'password',
-        ]);
-
-        Aula::factory()->create([
-            'nombre' => 'Test Aula',
-            'batch' => 'Test Batch',
-        ]);
-
-        Dispositivo::factory()->create([
-            'nombre' => 'Test Dispositivo',
-            'tipo' => 'Test Tipo',
-            'modelo' => 'Test Modelo',
-            'estado' => 'Test Estado',
-            'aula_id' => 1,
-        ]);
-    }
+    // 3. (Opcional) Crea un usuario profesor para que tú puedas loguearte
+    \App\Models\User::factory()->create([
+        'name' => 'Profesor Victor',
+        'email' => 'victor@profe.com',
+        'password' => 'Usuario.25',
+        'role' => 'profesor',
+    ]);
+}
 }

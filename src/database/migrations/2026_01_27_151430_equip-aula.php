@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('aulas', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->timestamp('batch');
+            $table->timestamps();
         });
 
         Schema::create('dispositivos', function (Blueprint $table) {
@@ -28,12 +28,10 @@ return new class extends Migration
             $table->timestamps();
         });
         
-        Schema::create('profesores', function (Blueprint $table) {
-            $table->id();
-            $table->string('nombre');
-            $table->string('email')->unique();
-            $table->string('password')->nullable();
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            if (!Schema::hasColumn('users', 'role')) {
+                $table->string('role')->default('profesor');
+            }
         });
     }
 

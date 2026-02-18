@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class dispositivo extends Model
+class Dispositivo extends Model
 {
-    //
+    use HasFactory;
+
     protected $fillable = [
         'nombre',
         'tipo',
@@ -17,7 +19,6 @@ class dispositivo extends Model
 
     public function aula()
     {
-        // Esto conecta la columna aula_id del dispositivo con el ID del aula
         return $this->belongsTo(Aula::class);
     }
 }
